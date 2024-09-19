@@ -1,77 +1,137 @@
 # "service" is the name of this project. This will also be added to your AWS resource names.
-service: tsanghan-ce6-mod3-10-node
+# service: tsanghan-ce6-mod3-10-node
+
+# frameworkVersion: '4'
+
+# provider:
+#   name: aws
+#   runtime: nodejs20.x
+#   region: ap-southeast-1
+#   s3:
+#     myBucket:
+#       name: tsanghan-ce6-serverless-s3-bucket-node
+#   environment:
+#     CLASS_NAME: "sctp-ce6"
+#     SNS_ARN:
+#       Ref: SuperTopic
+#   iamRoleStatements:
+#     - Effect: Allow
+#       Action:
+#         - sns:Publish
+#       Resource:
+#         Ref: SuperTopic
+
+# functions:
+#   hello:
+#     handler: index.hello
+#     events:
+#       - httpApi:
+#           path: /hello
+#           method: get
+#       - s3:
+#           bucket: myBucket
+#           event: s3:ObjectCreated:*
+#       - s3:
+#           bucket: myBucket
+#           event: s3:ObjectRemoved:*
+
+#   hello2:
+#     handler: index.hello2
+#     events:
+#       - httpApi:
+#           path: /hello2
+#           method: get
+#       - sqs:
+#           arn:
+#             Fn::GetAtt:
+#               - MyQueue
+#               - Arn
+#           batchSize: 10
+#           maximumBatchingWindow: 60
+#           functionResponseType: ReportBatchItemFailures
+#   hello3:
+#     handler: index.hello3
+#     events:
+#       - httpApi:
+#           path: /hello3
+#           method: get
+#       - sns:
+#           arn: !Ref SuperTopic
+#           topicName: MyCustomTopic-node
+
+# resources:
+#   Resources:
+#     MyQueue:
+#       Type: "AWS::SQS::Queue"
+#       Properties:
+#         QueueName: "tsanghan-ce6-Q-node"
+#     SuperTopic:
+#       Type: "AWS::SNS::Topic"
+#       Properties:
+#         TopicName: "MyCustomTopic-node"
+#         Subscription:
+#           - Protocol: "email"
+#             Endpoint: "tsanghan@gmail.com"
+
+# plugins:
+#   - serverless-offline
+
+service: dynamodb-sqs-service
 
 frameworkVersion: '4'
 
 provider:
   name: aws
   runtime: nodejs20.x
+  stage: dev
   region: ap-southeast-1
-  s3:
-    myBucket:
-      name: tsanghan-ce6-serverless-s3-bucket-node
   environment:
-    CLASS_NAME: "sctp-ce6"
-    SNS_ARN:
-      Ref: SuperTopic
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - sns:Publish
-      Resource:
-        Ref: SuperTopic
+    TABLE_NAME: ${self:custom.dynamodbTableName}
+    QUEUE_URL:
+      Ref: SQSQueue
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - dynamodb:PutItem
+          Resource:
+            - { 'Fn::GetAtt': [DynamoDBTable, Arn] }
+        - Effect: 'Allow'
+          Action:
+            - sqs:SendMessage
+          Resource:
+            - { 'Fn::GetAtt': [SQSQueue, Arn] }
 
 functions:
-  hello:
-    handler: index.hello
+  app:
+    handler: handler.handler
     events:
       - httpApi:
-          path: /hello
-          method: get
-      - s3:
-          bucket: myBucket
-          event: s3:ObjectCreated:*
-      - s3:
-          bucket: myBucket
-          event: s3:ObjectRemoved:*
-
-  hello2:
-    handler: index.hello2
-    events:
-      - httpApi:
-          path: /hello2
-          method: get
-      - sqs:
-          arn:
-            Fn::GetAtt:
-              - MyQueue
-              - Arn
-          batchSize: 10
-          maximumBatchingWindow: 60
-          functionResponseType: ReportBatchItemFailures
-  hello3:
-    handler: index.hello3
-    events:
-      - httpApi:
-          path: /hello3
-          method: get
-      - sns:
-          arn: !Ref SuperTopic
-          topicName: MyCustomTopic-node
+          path: /
+          method: post
 
 resources:
   Resources:
-    MyQueue:
-      Type: "AWS::SQS::Queue"
+    DynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
       Properties:
-        QueueName: "tsanghan-ce6-Q-node"
-    SuperTopic:
-      Type: "AWS::SNS::Topic"
+        TableName: ${self:custom.dynamodbTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    SQSQueue:
+      Type: 'AWS::SQS::Queue'
       Properties:
-        TopicName: "MyCustomTopic-node"
-        Subscription:
-          - Protocol: "email"
-            Endpoint: "tsanghan@gmail.com"
+        QueueName: ${self:custom.sqsQueueName}
+
+custom:
+  dynamodbTableName: my-dynamodb-table-${self:provider.stage}
+  sqsQueueName: my-sqs-queue-${self:provider.stage}
 
 plugins:
   - serverless-offline
