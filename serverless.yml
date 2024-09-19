@@ -107,7 +107,7 @@ functions:
   app:
     handler: handler.handler
     events:
-      - httpApi:
+      - http:
           path: /
           method: post
 
