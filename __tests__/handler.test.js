@@ -33,7 +33,7 @@ describe('Lambda Function', () => {
     sqs.promise.mockResolvedValue({});
 
     const event = {
-      body: JSON.stringify({ a: 'b', c: 'd' }),
+      body: "eyJ0ZXN0IjoiYm9keSJ9",
     };
 
     const response = await handler(event);
@@ -46,9 +46,8 @@ describe('Lambda Function', () => {
     expect(dynamoDb.put).toHaveBeenCalledWith({
       TableName: 'test-table',
       Item: expect.objectContaining({
-        a: 'b',
-        c: 'd',
         id: expect.any(String),
+        test: 'body'
       }),
     });
 
