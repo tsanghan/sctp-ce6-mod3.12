@@ -48,7 +48,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: install-dependencies
+    needs: npm-audit
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
