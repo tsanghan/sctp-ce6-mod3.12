@@ -130,8 +130,8 @@ resources:
         QueueName: ${self:custom.sqsQueueName}
 
 custom:
-  dynamodbTableName: my-dynamodb-table-${self:provider.stage}
-  sqsQueueName: my-sqs-queue-${self:provider.stage}
+  dynamodbTableName: tsanghan-ce6-dynamodb-table-${self:provider.stage}
+  sqsQueueName: tsanghan-ce6-sqs-queue-${self:provider.stage}
 
 plugins:
   - serverless-offline
