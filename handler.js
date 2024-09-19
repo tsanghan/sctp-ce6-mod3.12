@@ -11,7 +11,7 @@ exports.handler = async (event) => {
   let response;
   try {
     // Parse the JSON body
-    const item = JSON.parse(event.body);
+    const item = JSON.parse(Buffer.from(event.body, 'base64').toString());
 
     // Add a unique ID to the item
     item.id = uuidv4();
