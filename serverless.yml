@@ -76,7 +76,7 @@
 # plugins:
 #   - serverless-offline
 
-service: dynamodb-sqs-service
+service: tsanghan-ce6-dynamodb-sqs-service
 
 frameworkVersion: '4'
 
@@ -107,7 +107,7 @@ functions:
   app:
     handler: handler.handler
     events:
-      - http:
+      - httpApi:
           path: /
           method: post
 
