@@ -36,7 +36,7 @@ GitHub Action Workflow Pipline implemented is as follow;
 4) `code-unit-testing`
 5) `deploy`
 
-![GitHub Action Workflow Pipline](assets/images/serverless-deploy-success.PNG)
+![GitHub Action Workflow Pipline](https://github.com/tsanghan/sctp-ce6-mod3.12/blob/main/asset/images/serverless-deploy-success.PNG)
 
 To `destroy` all AWS resources created by the workflow pipeline
 ```
