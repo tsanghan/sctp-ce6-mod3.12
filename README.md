@@ -21,7 +21,7 @@ OR
 ```
 npm install serverless
 ```
-To create project with Serverless Framework. Do your own adjustment, i.e. directory create and such, we just need the `serverless.yml` file.
+To create project with Serverless Framework, please do your own adjustment on directry structure, i.e. directory create by serverless. We just need the `serverless.yml` file.
 ```
 sls
 ```
