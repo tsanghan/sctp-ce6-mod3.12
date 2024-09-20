@@ -59,6 +59,6 @@ JSON.parse(Buffer.from(event.body, 'base64').toString());
 JSON.parse(event.body);
 ```
 
-There exists in this repo a `send.sh` script that will sent appririate date to the API Endpoint using `curl`.
+There exists in this repo a `send.sh` script that will sent appririate data to the API Endpoint using `curl`.
 Check you `SQS` and `DynamoDB` for data received.
 
